@@ -8,7 +8,7 @@
  * @author Pavel Djundik
  * @license MIT
  */
-class CompareArrays2
+class CompareArrays
 {
 	/**
 	 * Flattens multi-dimensional array into one dimensional array,
