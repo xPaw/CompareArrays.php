@@ -66,7 +66,7 @@ class CompareArrays
 		{
 			if( !isset( $New[ $Key ] ) )
 			{
-				$Diff[ $Key ] = self::Singular( ComparedValue::TYPE_REMOVED, $Key, $Value );
+				$Diff[ $Key ] = self::Singular( ComparedValue::TYPE_REMOVED, $Value );
 				
 				continue;
 			}
@@ -95,22 +95,22 @@ class CompareArrays
 		{
 			if( !isset( $Old[ $Key ] ) )
 			{
-				$Diff[ $Key ] = self::Singular( ComparedValue::TYPE_ADDED, $Key, $Value );
+				$Diff[ $Key ] = self::Singular( ComparedValue::TYPE_ADDED, $Value );
 			}
 		}
 		
 		return $Diff;
 	}
 	
-	private static function Singular( $Type, $Key, $Value )
+	private static function Singular( $Type, $Value )
 	{
 		if( is_array( $Value ) )
 		{
 			$Diff = [];
 			
-			foreach( $Value as $Key2 => $Value2 )
+			foreach( $Value as $Key => $Value2 )
 			{
-				$Diff[ $Key2 ] = self::Singular( $Type, $Key2, $Value2 );
+				$Diff[ $Key ] = self::Singular( $Type, $Value2 );
 			}
 			
 			return $Diff;
