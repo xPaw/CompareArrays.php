@@ -21,7 +21,7 @@ class CompareArrays
 	{
 		$Data = [];
 		
-		if( !is_null( $Path ) )
+		if( $Path !== null )
 		{
 			$Path .= $Separator;
 		}
@@ -30,7 +30,10 @@ class CompareArrays
 		{
 			if( is_array( $Value ) )
 			{
-				$Data = array_merge( $Data, self::Flatten( $Value, $Separator, $Path . $Key ) );
+				foreach( self::Flatten( $Value, $Separator, $Path . $Key ) as $NewKey => $NewValue )
+				{
+					$Data[ $NewKey ] = $NewValue;
+				}
 			}
 			else
 			{
@@ -73,8 +76,23 @@ class CompareArrays
 			
 			$ValueNew = $New[ $Key ];
 			
-			if( is_array( $ValueNew ) )
+			// Force values to be proportional arrays
+			$IsOldArray = is_array( $Value );
+			$IsNewArray = is_array( $ValueNew );
+			
+			if( $IsOldArray && !$IsNewArray )
 			{
+				$IsNewArray = true;
+				$ValueNew = [ $ValueNew ];
+			}
+			
+			if( $IsNewArray )
+			{
+				if( !$IsOldArray )
+				{
+					$Value = [ $Value ];
+				}
+				
 				$Temp = self::Diff( $Value, $ValueNew );
 				
 				if( !empty( $Temp ) )
