@@ -1,0 +1,23 @@
+{
+	"name": "xpaw/compare-arrays",
+	"description": "Diffing multi dimensional arrays the easy way",
+	"license": "MIT",
+	"homepage": "https://github.com/xPaw/CompareArrays.php",
+	"keywords":
+	[
+		"array",
+		"diff",
+		"multi dimensional"
+	],
+	"require":
+	{
+		"php": ">=7.1"
+	},
+	"autoload":
+	{
+		"files":
+		[
+			"CompareArrays.php"
+		]
+	}
+}
