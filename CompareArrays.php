@@ -105,7 +105,18 @@ class CompareArrays
 				continue;
 			}
 			
-			if( $Value !== $ValueNew )
+			if( \is_float( $Value ) && \is_float( $ValueNew )
+			&& !\is_infinite( $Value ) && !\is_infinite( $ValueNew )
+			&& !\is_nan( $Value ) && !\is_nan( $ValueNew ) )
+			{
+				$AreValuesDifferent = \abs( $Value - $ValueNew ) >= PHP_FLOAT_EPSILON;
+			}
+			else
+			{
+				$AreValuesDifferent = $Value !== $ValueNew;
+			}
+
+			if( $AreValuesDifferent )
 			{
 				$Diff[ $Key ] = new ComparedValue( ComparedValue::TYPE_MODIFIED, $Value, $ValueNew );
 			}

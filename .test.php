@@ -63,6 +63,20 @@ class CompareArraysTests extends PHPUnit\Framework\TestCase
 		] );
 	}
 
+	public function testFloatChanges( )
+	{
+		$s = CompareArrays::Diff( [
+			'float' => 0.17,
+			'float2' => 0.17,
+		], [
+			'float' => 1 - 0.83,
+			'float2' => 1 - 0.84,
+		] );
+		$this->assertEquals( $s, [
+			'float2' => new ComparedValue( ComparedValue::TYPE_MODIFIED, 0.17, 0.16 ),
+		] );
+	}
+
 	public function testUnbalancedArrays( )
 	{
 		$s = CompareArrays::Diff( [
