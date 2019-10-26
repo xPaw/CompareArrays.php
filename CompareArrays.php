@@ -69,7 +69,7 @@ class CompareArrays
 		
 		foreach( $Old as $Key => $Value )
 		{
-			if( !array_key_exists( $New, $Key ) )
+			if( !array_key_exists( $Key, $New ) )
 			{
 				$Diff[ $Key ] = self::Singular( ComparedValue::TYPE_REMOVED, $Value );
 				
@@ -113,7 +113,7 @@ class CompareArrays
 		
 		foreach( $New as $Key => $Value )
 		{
-			if( !array_key_exists( $Old, $Key ) )
+			if( !array_key_exists( $Key, $Old ) )
 			{
 				$Diff[ $Key ] = self::Singular( ComparedValue::TYPE_ADDED, $Value );
 			}
