@@ -20,7 +20,7 @@ class CompareArraysTests extends PHPUnit\Framework\TestCase
 			'k5' => '',
 			'k6' => 1.23456,
 		] );
-		$this->assertEquals( $s, [] );
+		$this->assertSame( $s, [] );
 	}
 
 	public function testFindsDifferencesWhenFalseTypeChanges( )
@@ -36,9 +36,15 @@ class CompareArraysTests extends PHPUnit\Framework\TestCase
 		] );
 		$this->assertEquals( $s, [
 			'k1' => new ComparedValue( ComparedValue::TYPE_MODIFIED, null, false ),
-			'k2' => new ComparedValue( ComparedValue::TYPE_MODIFIED, '0', '0' ),
+			'k2' => new ComparedValue( ComparedValue::TYPE_MODIFIED, '0', 0 ),
 			'k3' => new ComparedValue( ComparedValue::TYPE_MODIFIED, '', null ),
 		] );
+		$this->assertSame( $s[ 'k1' ]->OldValue, null );
+		$this->assertSame( $s[ 'k1' ]->NewValue, false );
+		$this->assertSame( $s[ 'k2' ]->OldValue, '0' );
+		$this->assertSame( $s[ 'k2' ]->NewValue, 0 );
+		$this->assertSame( $s[ 'k3' ]->OldValue, '' );
+		$this->assertSame( $s[ 'k3' ]->NewValue, null );
 	}
 
 	public function testSimpleChanges( )
@@ -160,7 +166,7 @@ class CompareArraysTests extends PHPUnit\Framework\TestCase
 				]
 			]
 		] );
-		$this->assertEquals( $flattened, [
+		$this->assertSame( $flattened, [
 			'///hello' => 'world',
 		] );
 	}
@@ -179,7 +185,7 @@ class CompareArraysTests extends PHPUnit\Framework\TestCase
 				]
 			]
 		], '@_@' );
-		$this->assertEquals( $flattened, [
+		$this->assertSame( $flattened, [
 			'a@_@b@_@c@_@hello' => 'world',
 		] );
 	}
@@ -198,7 +204,7 @@ class CompareArraysTests extends PHPUnit\Framework\TestCase
 				]
 			]
 		], '.', 'prependedpath' );
-		$this->assertEquals( $flattened, [
+		$this->assertSame( $flattened, [
 			'prependedpath.a.b.c.hello' => 'world',
 		] );
 	}
