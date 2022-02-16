@@ -8,7 +8,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 class CompareArraysTests extends \PHPUnit\Framework\TestCase
 {
-	public function testEqualArrayFindsNoDifferences( )
+	public function testEqualArrayFindsNoDifferences() : void
 	{
 		$s = CompareArrays::Diff( [
 			'k1' => 'string',
@@ -28,8 +28,9 @@ class CompareArraysTests extends \PHPUnit\Framework\TestCase
 		$this->assertSame( $s, [] );
 	}
 
-	public function testFindsDifferencesWhenFalseTypeChanges( )
+	public function testFindsDifferencesWhenFalseTypeChanges() : void
 	{
+		/** @var ComparedValue[] $s */
 		$s = CompareArrays::Diff( [
 			'k1' => null,
 			'k2' => '0',
@@ -52,7 +53,7 @@ class CompareArraysTests extends \PHPUnit\Framework\TestCase
 		$this->assertSame( $s[ 'k3' ]->NewValue, null );
 	}
 
-	public function testSimpleChanges( )
+	public function testSimpleChanges() : void
 	{
 		$s = CompareArrays::Diff( [
 			'modified' => 'cool string',
@@ -68,7 +69,7 @@ class CompareArraysTests extends \PHPUnit\Framework\TestCase
 		] );
 	}
 
-	public function testFloatChanges( )
+	public function testFloatChanges() : void
 	{
 		$s = CompareArrays::Diff( [
 			'float' => 0.17,
@@ -82,7 +83,7 @@ class CompareArraysTests extends \PHPUnit\Framework\TestCase
 		] );
 	}
 
-	public function testUnbalancedArrays( )
+	public function testUnbalancedArrays() : void
 	{
 		$s = CompareArrays::Diff( [
 			'onearray' =>
@@ -107,7 +108,7 @@ class CompareArraysTests extends \PHPUnit\Framework\TestCase
 		] );
 	}
 
-	public function testVeryDeepArrays( )
+	public function testVeryDeepArrays() : void
 	{
 		$s = CompareArrays::Diff( [], [
 			'a1' =>
@@ -135,7 +136,7 @@ class CompareArraysTests extends \PHPUnit\Framework\TestCase
 		] );
 	}
 
-	public function testFlatten( )
+	public function testFlatten() : void
 	{
 		$s = CompareArrays::Diff( [], [
 			'a1' =>
@@ -155,10 +156,10 @@ class CompareArraysTests extends \PHPUnit\Framework\TestCase
 		] );
 	}
 
-	public function testCastArrayKeys( )
+	public function testCastArrayKeys() : void
 	{
 		$s = CompareArrays::Diff( [], [
-			1 => 'a',
+			1 => 'a', // @phpstan-ignore-line
 			'1' => 'b',
 			true => 'd',
 			null => 'this is a null',
@@ -170,7 +171,7 @@ class CompareArraysTests extends \PHPUnit\Framework\TestCase
 		] );
 	}
 
-	public function testFlattenEmptyKeys( )
+	public function testFlattenEmptyKeys() : void
 	{
 		$flattened = CompareArrays::Flatten( [
 			'' =>
@@ -200,7 +201,7 @@ class CompareArraysTests extends \PHPUnit\Framework\TestCase
 		] );
 	}
 
-	public function testFlattenChangeSeparator( )
+	public function testFlattenChangeSeparator() : void
 	{
 		$flattened = CompareArrays::Flatten( [
 			'a' =>
@@ -219,7 +220,7 @@ class CompareArraysTests extends \PHPUnit\Framework\TestCase
 		] );
 	}
 
-	public function testFlattenStartWithPath( )
+	public function testFlattenStartWithPath() : void
 	{
 		$flattened = CompareArrays::Flatten( [
 			'a' =>
