@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+namespace xPaw\CompareArrays;
+
 /**
  * Diffing multi dimensional arrays the easy way.
  *
@@ -14,23 +16,17 @@ class CompareArrays
 {
 	/**
 	 * Flattens multi-dimensional array into one dimensional array,
-	 * and turns keys into paths separated by $Separator (by default '/')
-	 *
-	 * @param array $Input
-	 * @param string $Separator
-	 * @param string $Path
-	 *
-	 * @return array
+	 * and turns keys into paths separated by $Separator (by default '/').
 	 */
 	public static function Flatten( array $Input, string $Separator = '/', string $Path = '' ) : array
 	{
 		$Data = [];
-		
+
 		if( $Path !== '' )
 		{
 			$Path .= $Separator;
 		}
-		
+
 		foreach( $Input as $Key => $Value )
 		{
 			if( is_array( $Value ) )
@@ -45,10 +41,10 @@ class CompareArrays
 				$Data[ $Path . $Key ] = $Value;
 			}
 		}
-		
+
 		return $Data;
 	}
-	
+
 	/**
 	 * Compares two arrays and produces a new array of changes between these
 	 * two arrays. New array will be same level deep as the input arrays,
@@ -57,59 +53,54 @@ class CompareArrays
 	 *
 	 * Optionally, use CompareArrays::Flatten() function to turn diff array
 	 * into a one dimensional array which will flatten keys into a single path.
-	 *
-	 * @param array $Old
-	 * @param array $New
-	 *
-	 * @return array
 	 */
 	public static function Diff( array $Old, array $New ) : array
 	{
 		$Diff = [];
-		
+
 		if( $Old === $New )
 		{
 			return $Diff;
 		}
-		
+
 		foreach( $Old as $Key => $Value )
 		{
 			if( !array_key_exists( $Key, $New ) )
 			{
 				$Diff[ $Key ] = self::Singular( ComparedValue::TYPE_REMOVED, $Value );
-				
+
 				continue;
 			}
-			
+
 			$ValueNew = $New[ $Key ];
-			
+
 			// Force values to be proportional arrays
 			$IsOldArray = is_array( $Value );
 			$IsNewArray = is_array( $ValueNew );
-			
+
 			if( $IsOldArray && !$IsNewArray )
 			{
 				$IsNewArray = true;
 				$ValueNew = [ $ValueNew ];
 			}
-			
+
 			if( $IsNewArray )
 			{
 				if( !$IsOldArray )
 				{
 					$Value = [ $Value ];
 				}
-				
+
 				$Temp = self::Diff( $Value, $ValueNew );
-				
+
 				if( !empty( $Temp ) )
 				{
 					$Diff[ $Key ] = $Temp;
 				}
-				
+
 				continue;
 			}
-			
+
 			if( \is_float( $Value ) && \is_float( $ValueNew )
 			&& !\is_infinite( $Value ) && !\is_infinite( $ValueNew )
 			&& !\is_nan( $Value ) && !\is_nan( $ValueNew ) )
@@ -126,7 +117,7 @@ class CompareArrays
 				$Diff[ $Key ] = new ComparedValue( ComparedValue::TYPE_MODIFIED, $Value, $ValueNew );
 			}
 		}
-		
+
 		foreach( $New as $Key => $Value )
 		{
 			if( !array_key_exists( $Key, $Old ) )
@@ -134,35 +125,32 @@ class CompareArrays
 				$Diff[ $Key ] = self::Singular( ComparedValue::TYPE_ADDED, $Value );
 			}
 		}
-		
+
 		return $Diff;
 	}
-	
+
 	/**
-	 * @param string $Type
-	 * @param mixed $Value
-	 *
-	 * @return ComparedValue|array
+	 * @param ComparedValue::TYPE_* $Type
 	 */
-	private static function Singular( string $Type, $Value )
+	private static function Singular( string $Type, mixed $Value ) : ComparedValue|array
 	{
 		if( is_array( $Value ) )
 		{
 			$Diff = [];
-			
+
 			foreach( $Value as $Key => $Value2 )
 			{
 				$Diff[ $Key ] = self::Singular( $Type, $Value2 );
 			}
-			
+
 			return $Diff;
 		}
-		
+
 		if( $Type === ComparedValue::TYPE_REMOVED )
 		{
 			return new ComparedValue( $Type, $Value, null );
 		}
-		
+
 		return new ComparedValue( $Type, null, $Value );
 	}
 }
@@ -172,12 +160,15 @@ class ComparedValue
 	const TYPE_ADDED = 'added';
 	const TYPE_REMOVED = 'removed';
 	const TYPE_MODIFIED = 'modified';
-	
-	public $OldValue;
-	public $NewValue;
-	public $Type;
-	
-	function __construct( string $Type, $OldValue, $NewValue )
+
+	public mixed $OldValue;
+	public mixed $NewValue;
+	public string $Type;
+
+	/**
+	 * @param self::TYPE_* $Type
+	 */
+	function __construct( string $Type, mixed $OldValue, mixed $NewValue )
 	{
 		$this->OldValue = $OldValue;
 		$this->NewValue = $NewValue;

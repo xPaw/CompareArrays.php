@@ -1,7 +1,12 @@
 <?php
 declare(strict_types=1);
 
-class CompareArraysTests extends PHPUnit\Framework\TestCase
+use xPaw\CompareArrays\CompareArrays;
+use xPaw\CompareArrays\ComparedValue;
+
+require __DIR__ . '/vendor/autoload.php';
+
+class CompareArraysTests extends \PHPUnit\Framework\TestCase
 {
 	public function testEqualArrayFindsNoDifferences( )
 	{
@@ -155,7 +160,6 @@ class CompareArraysTests extends PHPUnit\Framework\TestCase
 		$s = CompareArrays::Diff( [], [
 			1 => 'a',
 			'1' => 'b',
-			1.5 => 'c',
 			true => 'd',
 			null => 'this is a null',
 		] );
@@ -178,10 +182,21 @@ class CompareArraysTests extends PHPUnit\Framework\TestCase
 						'hello' => 'world'
 					]
 				]
-			]
+			],
+			'root' =>
+			[
+				null =>
+				[
+					'' =>
+					[
+						'hello' => 'world'
+					]
+				]
+			],
 		] );
 		$this->assertSame( $flattened, [
 			'///hello' => 'world',
+			'root///hello' => 'world',
 		] );
 	}
 
