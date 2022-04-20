@@ -20,7 +20,7 @@ class CompareArrays
 	 *
 	 * @param array<mixed> $Input
 	 *
-	 * @return array<string, mixed>
+	 * @return array<int|string, mixed>
 	 */
 	public static function Flatten( array $Input, string $Separator = '/', ?string $Path = null ) : array
 	{
