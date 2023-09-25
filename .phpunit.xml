@@ -13,7 +13,7 @@
   <logging/>
   <source>
     <include>
-      <file>./CompareArrays.php</file>
+      <directory suffix=".php">src</directory>
     </include>
   </source>
 </phpunit>
