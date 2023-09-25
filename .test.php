@@ -75,8 +75,8 @@ class CompareArraysTests extends \PHPUnit\Framework\TestCase
 			'float' => 0.17,
 			'float2' => 0.17,
 		], [
-			'float' => 1 - 0.83,
-			'float2' => 1 - 0.84,
+			'float' => 0.17,
+			'float2' => 0.16,
 		] );
 		$this->assertEquals( $s, [
 			'float2' => new ComparedValue( ComparedValue::TYPE_MODIFIED, 0.17, 0.16 ),
