@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit colors="true">
-	<testsuites>
-		<testsuite name="Tests">
-			<file>./.test.php</file>
-		</testsuite>
-	</testsuites>
-	<filter>
-		<whitelist processUncoveredFilesFromWhitelist="true">
-			<file>./CompareArrays.php</file>
-		</whitelist>
-	</filter>
-	<logging>
-		<log type="coverage-clover" target="build/logs/clover.xml"/>
-	</logging>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.3/phpunit.xsd" cacheDirectory=".phpunit.cache">
+  <coverage>
+    <report>
+      <clover outputFile="build/logs/clover.xml"/>
+    </report>
+  </coverage>
+  <testsuites>
+    <testsuite name="Tests">
+      <file>./.test.php</file>
+    </testsuite>
+  </testsuites>
+  <logging/>
+  <source>
+    <include>
+      <file>./CompareArrays.php</file>
+    </include>
+  </source>
 </phpunit>
