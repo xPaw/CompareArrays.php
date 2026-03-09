@@ -5,9 +5,9 @@ namespace xPaw\CompareArrays;
 
 class ComparedValue
 {
-	const TYPE_ADDED = 'added';
-	const TYPE_REMOVED = 'removed';
-	const TYPE_MODIFIED = 'modified';
+	public const string TYPE_ADDED = 'added';
+	public const string TYPE_REMOVED = 'removed';
+	public const string TYPE_MODIFIED = 'modified';
 
 	public mixed $OldValue;
 	public mixed $NewValue;
@@ -16,7 +16,7 @@ class ComparedValue
 	/**
 	 * @param self::TYPE_* $Type
 	 */
-	function __construct( string $Type, mixed $OldValue, mixed $NewValue )
+	public function __construct( string $Type, mixed $OldValue, mixed $NewValue )
 	{
 		$this->OldValue = $OldValue;
 		$this->NewValue = $NewValue;

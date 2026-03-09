@@ -162,7 +162,7 @@ class CompareArraysTests extends \PHPUnit\Framework\TestCase
 			1 => 'a', // @phpstan-ignore-line
 			'1' => 'b',
 			true => 'd',
-			null => 'this is a null',
+			'' => 'this is a null',
 		] );
 		$flattened = CompareArrays::Flatten( $s );
 		$this->assertEquals( $flattened, [
@@ -176,7 +176,7 @@ class CompareArraysTests extends \PHPUnit\Framework\TestCase
 		$flattened = CompareArrays::Flatten( [
 			'' =>
 			[
-				null =>
+				'' =>
 				[
 					'' =>
 					[
@@ -186,7 +186,7 @@ class CompareArraysTests extends \PHPUnit\Framework\TestCase
 			],
 			'root' =>
 			[
-				null =>
+				'' =>
 				[
 					'' =>
 					[
@@ -498,6 +498,98 @@ class CompareArraysTests extends \PHPUnit\Framework\TestCase
 			'a' => new ComparedValue( ComparedValue::TYPE_MODIFIED, 'old', 'new' ),
 			'b/c' => new ComparedValue( ComparedValue::TYPE_ADDED, null, 'value' ),
 		] );
+	}
+
+	public function testNestedUnchangedSubArraysOmitted() : void
+	{
+		$s = CompareArrays::Diff( [
+			'unchanged' => ['a' => 1, 'b' => 2],
+			'changed' => ['a' => 1],
+			'scalar' => 'same',
+		], [
+			'unchanged' => ['a' => 1, 'b' => 2],
+			'changed' => ['a' => 2],
+			'scalar' => 'same',
+		] );
+
+		$this->assertArrayNotHasKey( 'unchanged', $s );
+		$this->assertArrayNotHasKey( 'scalar', $s );
+		$this->assertArrayHasKey( 'changed', $s );
+		$this->assertIsArray( $s['changed'] );
+		$this->assertEquals( $s['changed']['a'], new ComparedValue( ComparedValue::TYPE_MODIFIED, 1, 2 ) );
+	}
+
+	public function testDeepNestedRemoval() : void
+	{
+		$s = CompareArrays::Diff( [
+			'a1' =>
+			[
+				'a2' =>
+				[
+					'a3' =>
+					[
+						'hello' => 'world'
+					]
+				]
+			]
+		], [] );
+		$this->assertEquals( $s, [
+			'a1' =>
+			[
+				'a2' =>
+				[
+					'a3' =>
+					[
+						'hello' => new ComparedValue( ComparedValue::TYPE_REMOVED, 'world', null ),
+					]
+				]
+			]
+		] );
+	}
+
+	public function testFloatVsNonFloatComparison() : void
+	{
+		/** @var ComparedValue[] $s */
+		$s = CompareArrays::Diff( [
+			'float_to_int' => 1.0,
+			'float_to_string' => 1.5,
+			'int_to_float' => 1,
+		], [
+			'float_to_int' => 1,
+			'float_to_string' => '1.5',
+			'int_to_float' => 1.0,
+		] );
+
+		$this->assertArrayHasKey( 'float_to_int', $s );
+		$this->assertArrayHasKey( 'float_to_string', $s );
+		$this->assertArrayHasKey( 'int_to_float', $s );
+		$this->assertEquals( $s['float_to_int']->Type, ComparedValue::TYPE_MODIFIED );
+		$this->assertEquals( $s['float_to_string']->Type, ComparedValue::TYPE_MODIFIED );
+		$this->assertEquals( $s['int_to_float']->Type, ComparedValue::TYPE_MODIFIED );
+	}
+
+	public function testInfinityChanges() : void
+	{
+		/** @var ComparedValue[] $s */
+		$s = CompareArrays::Diff( [
+			'inf_to_ninf' => INF,
+			'ninf_to_inf' => -INF,
+			'inf_to_float' => INF,
+		], [
+			'inf_to_ninf' => -INF,
+			'ninf_to_inf' => INF,
+			'inf_to_float' => 1.0,
+		] );
+
+		$this->assertCount( 3, $s );
+		$this->assertEquals( $s['inf_to_ninf']->Type, ComparedValue::TYPE_MODIFIED );
+		$this->assertEquals( $s['ninf_to_inf']->Type, ComparedValue::TYPE_MODIFIED );
+		$this->assertEquals( $s['inf_to_float']->Type, ComparedValue::TYPE_MODIFIED );
+	}
+
+	public function testFlattenEmptyArray() : void
+	{
+		$this->assertSame( CompareArrays::Flatten( [] ), [] );
 	}
 
 	public function testFlattenWithMixedTypesAndEmptyStrings() : void

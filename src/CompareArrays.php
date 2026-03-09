@@ -20,7 +20,7 @@ class CompareArrays
 	 *
 	 * @param array<mixed> $Input
 	 *
-	 * @return array<int|string, mixed>
+	 * @return array<array-key, mixed>
 	 */
 	public static function Flatten( array $Input, string $Separator = '/', ?string $Path = null ) : array
 	{
@@ -62,7 +62,7 @@ class CompareArrays
 	 * Optionally, use CompareArrays::Flatten() function to turn diff array
 	 * into a one dimensional array which will flatten keys into a single path.
 	 *
-	 * mixed[] return type because the array can be arbitrarily deep
+	 * mixed[] return type because the array can be arbitrarily deep.
 	 *
 	 * @param array<mixed> $Old
 	 * @param array<mixed> $New
@@ -141,11 +141,11 @@ class CompareArrays
 	}
 
 	/**
-	 * mixed[] return type because the array can be arbitrarily deep
+	 * mixed[] return type because the array can be arbitrarily deep.
 	 *
 	 * @param ComparedValue::TYPE_* $Type
 	 *
-	 * @return ComparedValue|mixed[]
+	 * @return ($Value is array ? ComparedValue|ComparedValue[] : ComparedValue)
 	 */
 	private static function Singular( string $Type, mixed $Value ) : ComparedValue|array
 	{
@@ -158,6 +158,7 @@ class CompareArrays
 				$Diff[ $Key ] = self::Singular( $Type, $Value2 );
 			}
 
+			/** @var ComparedValue[] $Diff */
 			return $Diff;
 		}
 
